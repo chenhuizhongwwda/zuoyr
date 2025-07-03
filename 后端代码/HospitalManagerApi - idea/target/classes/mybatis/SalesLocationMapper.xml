@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.showproject.hospital.mapper.SalesLocationMapper">
+
+    <!-- 新增销售地点 -->
+    <insert id="insertSalesLocation" parameterType="com.showproject.hospital.pojo.SalesLocation">
+        INSERT INTO sales_location (location_name, address, city_id, longitude, latitude)
+        VALUES (#{locationName}, #{address}, #{cityId}, #{longitude}, #{latitude})
+    </insert>
+
+    <!-- 更新销售地点 -->
+    <update id="updateSalesLocation" parameterType="com.showproject.hospital.pojo.SalesLocation">
+        UPDATE sales_location
+        SET location_name = #{locationName},
+            address = #{address},
+            city_id = #{cityId},
+            longitude = #{longitude},
+            latitude = #{latitude}
+        WHERE location_id = #{locationId}
+    </update>
+
+    <!-- 删除销售地点 -->
+    <delete id="deleteSalesLocation" parameterType="int">
+        DELETE FROM sales_location WHERE location_id = #{locationId}
+    </delete>
+
+    <!-- 查询所有销售地点，带城市名 -->
+    <select id="selectAllSalesLocations" resultType="com.showproject.hospital.pojo.SalesLocation">
+        SELECT sl.location_id AS locationId,
+               sl.location_name AS locationName,
+               sl.address,
+               sl.city_id AS cityId,
+               sl.longitude,
+               sl.latitude,
+               c.city_name AS cityName
+        FROM sales_location sl
+                 LEFT JOIN city c ON sl.city_id = c.city_id
+    </select>
+
+    <!-- 按城市ID筛选销售地点（可选） -->
+    <select id="selectSalesLocationsByCityId" resultType="com.showproject.hospital.pojo.SalesLocation">
+        SELECT sl.location_id AS locationId,
+               sl.location_name AS locationName,
+               sl.address,
+               sl.city_id AS cityId,
+               sl.longitude,
+               sl.latitude,
+               c.city_name AS cityName
+        FROM sales_location sl
+                 LEFT JOIN city c ON sl.city_id = c.city_id
+        WHERE sl.city_id = #{cityId}
+    </select>
+
+    <!-- 查询单个销售地点，带城市名 -->
+    <select id="selectSalesLocationById" resultType="com.showproject.hospital.pojo.SalesLocation">
+        SELECT sl.location_id AS locationId,
+               sl.location_name AS locationName,
+               sl.address,
+               sl.city_id AS cityId,
+               sl.longitude,
+               sl.latitude,
+               c.city_name AS cityName
+        FROM sales_location sl
+                 LEFT JOIN city c ON sl.city_id = c.city_id
+        WHERE sl.location_id = #{locationId}
+    </select>
+
+</mapper>

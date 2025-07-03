@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.showproject.hospital.mapper.PatientEvaluationMapper">
+
+    <!-- 1. 提交评价 -->
+    <insert id="insertEvaluation" parameterType="com.showproject.hospital.pojo.PatientEvaluation">
+        INSERT INTO patient_evaluation(order_id, patient_id, doctor_id, score, content, create_time, state)
+        VALUES(#{orderId}, #{patientId}, #{doctorId}, #{score}, #{content}, NOW(), 1)
+    </insert>
+
+    <!-- 2. 按医生查看评价 -->
+    <select id="selectEvaluationsByDoctor" resultType="com.showproject.hospital.pojo.PatientEvaluation">
+        SELECT * FROM patient_evaluation WHERE doctor_id = #{doctorId} AND state = 1 ORDER BY create_time DESC
+    </select>
+
+    <!-- 3. 按患者查看评价 -->
+    <select id="selectEvaluationsByPatient" resultType="com.showproject.hospital.pojo.PatientEvaluation">
+        SELECT * FROM patient_evaluation WHERE patient_id = #{patientId} AND state = 1 ORDER BY create_time DESC
+    </select>
+
+    <!-- 4. 查看所有评价 -->
+    <select id="selectAllEvaluations" resultType="com.showproject.hospital.pojo.PatientEvaluation">
+        SELECT * FROM patient_evaluation ORDER BY create_time DESC
+    </select>
+
+    <!-- 5. 回复评价 -->
+    <update id="updateReply">
+        UPDATE patient_evaluation SET reply = #{reply}, reply_time = #{replyTime} WHERE eval_id = #{evalId}
+    </update>
+
+    <!-- 6. 恢复评价（state=1） -->
+    <update id="updateState">
+        UPDATE patient_evaluation SET state = #{state} WHERE eval_id = #{evalId}
+    </update>
+
+    <!-- 7. 统计分析：某医生的评价总数、平均分、五星好评数 -->
+    <select id="getDoctorEvalStats" resultType="map">
+        SELECT doctor_id,
+               COUNT(*) as total,
+               AVG(score) as avgScore,
+               SUM(CASE WHEN score=5 THEN 1 ELSE 0 END) as fiveStar
+        FROM patient_evaluation
+        WHERE doctor_id = #{doctorId} AND state = 1
+        GROUP BY doctor_id
+    </select>
+
+</mapper>

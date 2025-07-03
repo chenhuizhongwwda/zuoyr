@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.showproject.hospital.mapper.CityMapper">
+
+    <!-- 添加城市 -->
+    <insert id="insertCity" parameterType="com.showproject.hospital.pojo.City">
+        INSERT INTO city (city_name) VALUES (#{cityName})
+    </insert>
+
+    <!-- 查询所有城市 -->
+    <select id="selectAllCities" resultType="com.showproject.hospital.pojo.City">
+        SELECT city_id AS cityId, city_name AS cityName FROM city
+    </select>
+
+    <!-- 根据ID删除城市 -->
+    <delete id="deleteCityById" parameterType="int">
+        DELETE FROM city WHERE city_id = #{cityId}
+    </delete>
+
+</mapper>
